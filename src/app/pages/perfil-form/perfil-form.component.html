@@ -1,0 +1,30 @@
+<div class="register-form">
+  <div class="register-form__container">
+    <div class="register-form__card">
+      <h2 class="register-form__title">Crie seu cadastro</h2>
+      <p class="register-form__subtitle">Melhore sua descrição para atrair clientes!</p>
+
+      <form [formGroup]="perfilForm" (ngSubmit)="onProximo()">
+
+        <div class="register-form__actions">
+          <app-button
+            text="Anterior"
+            type="outline"
+            icon="fas fa-arrow-left"
+            iconPosition="left"
+            (clicked)="onAnterior()">
+          </app-button>
+
+          <app-button
+            text="Próximo"
+            type="primary"
+            icon="fas fa-arrow-right"
+            iconPosition="right"
+            [disabled]="perfilForm.invalid"
+            (clicked)="onProximo()">
+          </app-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
