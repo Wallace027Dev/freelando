@@ -1,14 +1,148 @@
 <div class="register-form">
   <div class="register-form__container">
     <div class="register-form__card">
-      <h2 class="register-form__title">Crie seu register</h2>
+      <h2 class="register-form__title">Crie seu cadastro</h2>
 
       <p class="register-form__description">
-        Crie seu perfil gratuitamente para começar a trabalhar com os melhores freelancers.
-        Em seguida, você poderá dar mais detalhes sobre suas demandas e sobre sua forma de trabalho.
+        Crie seu perfil gratuitamente para começar a trabalhar com os melhores
+        freelancers. Em seguida, você poderá dar mais detalhes sobre suas
+        demandas e sobre sua forma de trabalho.
       </p>
 
-      <form [formGroup]="personalDataForm" (ngSubmit)="onProximo()">
+      <form [formGroup]="personalDataForm" (ngSubmit)="onNext()">
+        <div class="register-form__field">
+          <label for="fullName" class="register-form__label"
+            >Nome completo</label
+          >
+          <input
+            id="fullName"
+            type="text"
+            class="register-form__input"
+            formControlName="fullName"
+          />
+          @if (personalDataForm.get("fullName")?.invalid &&
+          personalDataForm.get("fullName")?.touched) {
+          <div class="register-form__error">
+            @if(personalDataForm.get("fullName")?.errors?.["required"]) {
+            <span> Nome é obrigatório. </span>
+            } @if (personalDataForm.get("fullName")?.errors?.["minlength"]) {
+            <span> Nome precisa ter pelo menos 3 caracteres. </span>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="register-form__row">
+          <!-- Estado -->
+          <div class="register-form__field register-form__field--half">
+            <label for="state" class="register-form__label">Estado</label>
+            <select
+              id="state"
+              class="register-form__input"
+              formControlName="state"
+            >
+              <option value="" disabled>Selecione</option>
+
+              @if (states$ | async; as states) { @for (state of states; track
+              state.sigla) {
+              <option [value]="state.sigla">{{ state.nome }}</option>
+              } }
+            </select>
+
+            @if (personalDataForm.get("state")?.invalid &&
+            personalDataForm.get("state")?.touched) {
+            <div class="register-form__error">Estado é obrigatório.</div>
+            }
+          </div>
+
+          <!-- Cidade -->
+          <div class="register-form__field register-form__field--half">
+            <label for="city" class="register-form__label">Cidade</label>
+            <select
+              id="city"
+              class="register-form__input"
+              formControlName="city"
+              [disabled]="
+                (loadingCities$ | async) ||
+                !personalDataForm.get('state')?.value
+              "
+            >
+              <option [ngValue]="null" disabled>
+                @if (!personalDataForm.get('state')?.value) { Selecione } @else
+                { @if (loadingCities$ | async) { Carregando... } @else {
+                Selecione } }
+              </option>
+
+              @if (cities$ | async; as cities) { @for (city of cities; track
+              city.id) {
+              <option [value]="city.id">{{ city.nome }}</option>
+              } }
+            </select>
+
+            @if (personalDataForm.get("city")?.invalid &&
+            personalDataForm.get("city")?.touched) {
+            <div class="register-form__error">Cidade é obrigatório.</div>
+            }
+          </div>
+        </div>
+
+        <div class="register-form__field">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            class="register-form__input"
+            formControlName="email"
+          />
+          @if (personalDataForm.get("email")?.invalid &&
+          personalDataForm.get("email")?.touched) {
+          <div class="register-form__error">
+            @if(personalDataForm.get("email")?.errors?.["required"]) {
+            <span> Email é obrigatório. </span>
+            } @if (personalDataForm.get("email")?.errors?.["email"]) {
+            <span> Email inválido. </span>
+            }
+          </div>
+          }
+        </div>
+
+        <div class="register-form__row">
+          <div class="register-form__field register-form__field--half">
+            <label for="password" class="register-form__label">Senha</label>
+            <input
+              id="password"
+              type="password"
+              class="register-form__input"
+              formControlName="password"
+            />
+            @if (personalDataForm.get("password")?.invalid &&
+            personalDataForm.get("password")?.touched) {
+            <div class="register-form__error">
+              @if (personalDataForm.get("password")?.errors?.["required"]) {
+              <span> Senha é obrigatória. </span>
+              } @if (personalDataForm.get("password")?.errors?.["minlength"]) {
+              <span> Senha precisa ter pelo menos 6 caracteres. </span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="register-form__field register-form__field--half">
+            <label for="confirmPassword" class="register-form__label"
+              >Confirmar senha</label
+            >
+            <input
+              id="confirmPassword"
+              type="password"
+              class="register-form__input"
+              formControlName="confirmPassword"
+            />
+            @if (personalDataForm.errors?.["passwordsDontMatch"] &&
+            personalDataForm.touched) {
+            <div class="register-form__error">Senhas precisam ser iguais.</div>
+            }
+          </div>
+        </div>
 
         <div class="register-form__actions">
           <app-button
@@ -16,7 +150,8 @@
             type="outline"
             icon="fas fa-arrow-left"
             iconPosition="left"
-            (clicked)="onAnterior()">
+            (clicked)="onPrevious()"
+          >
           </app-button>
 
           <app-button
@@ -25,7 +160,8 @@
             icon="fas fa-arrow-right"
             iconPosition="right"
             [disabled]="personalDataForm.invalid"
-            (clicked)="onProximo()">
+            (clicked)="onNext()"
+          >
           </app-button>
         </div>
       </form>

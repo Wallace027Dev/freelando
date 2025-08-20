@@ -35,13 +35,14 @@
     margin-bottom: 1.5rem;
 
     &--half {
-      width: 46%;
+      width: 50%;
     }
   }
 
   &__row {
     display: flex;
     justify-content: space-between;
+    gap: 1rem;
   }
 
   &__label {
