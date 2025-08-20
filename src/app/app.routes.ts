@@ -4,8 +4,8 @@ import { PersonalDataFormComponent } from './pages/personal-data-form/personal-d
 import { PerfilFormComponent } from './pages/perfil-form/perfil-form.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/register/area-atuacao', pathMatch: 'full' },
-  { path: 'register/area-atuacao', component: RegisterFormComponent },
-  { path: 'cadastro/personal-data', component: PersonalDataFormComponent },
+  { path: '', redirectTo: '/cadastro/area-atuacao', pathMatch: 'full' },
+  { path: 'cadastro/area-atuacao', component: RegisterFormComponent },
+  { path: 'cadastro/dados-pessoais', component: PersonalDataFormComponent },
   { path: 'cadastro/perfil', component: PerfilFormComponent },
 ];

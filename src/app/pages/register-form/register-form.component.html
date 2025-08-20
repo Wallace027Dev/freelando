@@ -3,14 +3,66 @@
     <div class="register-form__card">
       <h2 class="register-form__title">Crie seu cadastro</h2>
 
-      <form
-        class="register-form__form"
-        [formGroup]="registerForm"
-      >
+      <form [formGroup]="registerForm" (ngSubmit)="onNext()">
         <div class="register-form__section">
-          <h3 class="register-form__section-title">Area de atuação</h3>
+          <h3 class="register-form__section-title">Qual a área de atuação?</h3>
+
+          <div class="register-form__radio-group">
+            @for (area of activityAreas; track area.id) {
+              <app-radio-option
+                [id]="area.id"
+                [name]="'activityArea'"
+                [value]="area.value"
+                [label]="area.label"
+                [checked]="registerForm.get('activityArea')?.value === area.value"
+                (selectionChange)="onAreaChange($event)"
+              ></app-radio-option>
+            }
+          </div>
+
+          @if (registerForm.get('activityArea')?.touched && registerForm.get('activityArea')?.invalid) {
+            <div class="register-form__error">
+              Por favor, selecione uma área de atuação.
+            </div>
+          }
+        </div>
+
+        <div class="register-form__section">
+          <h3 class="register-form__section-title">Nível de experiência</h3>
+
+          <app-experience-level
+            [levels]="experienceLevels"
+            [selectedLevel]="registerForm.get('experienceLevel')?.value"
+            (levelChange)="onLevelChange($event)"
+          ></app-experience-level>
+
+          @if (registerForm.get('experienceLevel')?.touched && registerForm.get('experienceLevel')?.invalid) {
+            <div class="register-form__error">
+              Por favor, selecione um nível de experiência.
+            </div>
+          }
+        </div>
+
+        <div class="register-form__actions">
+          <app-button
+            text="Anterior"
+            type="outline"
+            icon="fas fa-arrow-left"
+            iconPosition="left"
+            (clicked)="onPrevious()">
+          </app-button>
+
+          <app-button
+            text="Próximo"
+            type="primary"
+            icon="fas fa-arrow-right"
+            iconPosition="right"
+            [disabled]="registerForm.invalid"
+            (clicked)="onNext()">
+          </app-button>
         </div>
       </form>
+
     </div>
   </div>
 </div>
