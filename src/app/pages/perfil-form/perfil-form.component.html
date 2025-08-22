@@ -16,7 +16,8 @@
               [class.register-form__upload-area--with-preview]="photoPreview"
               (click)="fileInput.click()"
             >
-              <ng-container *ngIf="!photoPreview">
+              @if(!photoPreview) {
+              <ng-container>
                 <div>
                   <i class="fas fa-cloud-upload-alt"></i>
                   <p>
@@ -25,13 +26,15 @@
                   </p>
                 </div>
               </ng-container>
-              <ng-container *ngIf="photoPreview">
+              } @if (photoPreview) {
+              <ng-container>
                 <img
                   [src]="photoPreview"
                   alt="Preview da foto"
                   class="register-form__photo-preview"
                 />
               </ng-container>
+              }
             </div>
             <input
               #fileInput
@@ -43,25 +46,63 @@
           </div>
         </div>
 
-        <div class="register-form_field">
-          <label for="skills" class="register-form__label">
-            Cite até 3 habilidades principais que você possui
-          </label>
+        <div class="register-form__field">
+          <label for="summary" class="register-form__label">Resumo</label>
+          <textarea
+            id="summary"
+            formControlName="summary"
+            class="register-form__textarea"
+            maxlength="70"
+            rows="3"
+          ></textarea>
 
-          @for (skill of skills; track skill.name) {
-          <app-chip
-            [text]="skill.name"
-            [selected]="skill.selected"
-            [disabled]="
-              !skill.selected &&
-              perfilForm.get('selectedSkills')?.value.length >= 3
-            "
-            (clicked)="toggleSkill(skill)"
-          ></app-chip>
+          <div class="register-form__field-info">
+            <span>Faça um resumo em até 70 caracteres.</span>
+            <span>{{ charactersLeft }} caracteres restantes.</span>
+          </div>
+
+          @if (perfilForm.get("summary")?.invalid &&
+          perfilForm.get("summary")?.touched) {
+          <div class="register-form__error">
+            @if (perfilForm.get("summary")?.errors?.["required"]) {
+            <span>Resumo é obrigatório</span>
+            } @if (perfilForm.get("summary")?.errors?.["maxLength"]) {
+            <span>Resumo precisa ter no máximo 70 caracteres</span>
+            }
+          </div>
           }
         </div>
 
         <div class="register-form__field">
+          <label for="skills" class="register-form__label">
+            Cite até 3 habilidades principais que você possui
+          </label>
+
+          <div class="register-form__chips">
+            @for (skill of skills; track skill.name) {
+            <app-chip
+              [text]="skill.name"
+              [selected]="skill.selected"
+              [disabled]="
+                !skill.selected &&
+                perfilForm.get('selectedSkills')?.value.length >= 3
+              "
+              (clicked)="toggleSkill(skill)"
+            ></app-chip>
+            }
+          </div>
+        </div>
+
+        <div class="register-form__field">
+          <div class="register-form__row register-form__row--header">
+            <div class="register-form__column">
+              <label class="register-form__label">Idiomas</label>
+            </div>
+            <div class="register-form__column">
+              <label class="register-form__label">Nível</label>
+            </div>
+          </div>
+
           <ng-container formArrayName="languages">
             @for (languageForm of languagesArray.controls; track $index) {
             <div [formGroupName]="$index" class="register-form__row">
@@ -96,7 +137,7 @@
               </div>
             </div>
 
-            <div class="register-form__column register-form__actions">
+            <div class="register-form__column register-form__column--actions">
               @if ($index > 0 || languageForm.get("name")?.value !==
               "Português") {
               <button
@@ -113,11 +154,48 @@
 
           <button
             type="button"
-            class="register-form__icon-button"
+            class="register-form__text-button"
             (click)="addLanguage()"
           >
-            Adicionar Idioma
+            <i class="fas fa-plus-circle"></i>
+            Adicionar Idiomas
           </button>
+        </div>
+
+        <div class="register-form__field">
+          <label for="portfolio" class="register-form__label">
+            Portfolio
+          </label>
+          <input
+            id="portfolio"
+            type="url"
+            class="register-form__input"
+            formControlName="portfolio"
+          />
+
+          @if(perfilForm.get("portfolio")?.invalid &&
+          perfilForm.get("portfolio")?.touched) {
+          <div class="register-form__error">
+            URL inválida. Inclua http:// ou https://
+          </div>
+          }
+        </div>
+
+        <div class="register-form__field">
+          <label for="linkedin" class="register-form__label"> LinkedIn </label>
+          <input
+            id="linkedin"
+            type="url"
+            class="register-form__input"
+            formControlName="linkedin"
+          />
+
+          @if(perfilForm.get("linkedin")?.invalid &&
+          perfilForm.get("linkedin")?.touched) {
+          <div class="register-form__error">
+            URL do LinkedIn inválida. Inclua http:// ou https://
+          </div>
+          }
         </div>
 
         <div class="register-form__actions">
