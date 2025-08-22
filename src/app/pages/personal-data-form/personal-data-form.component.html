@@ -90,9 +90,9 @@
               "
             >
               <option [ngValue]="null" disabled>
-                @if (!personalDataForm.get('state')?.value) { Selecione } @else
-                { @if (loadingCities$ | async) { Carregando... } @else {
-                Selecione } }
+                @if (!personalDataForm.get('state')?.value) { Selecione }
+                @else { @if (loadingCities$ | async) { Carregando... }
+                @else { Selecione } }
               </option>
 
               @if (cities$ | async; as cities) { @for (city of cities; track
@@ -110,22 +110,49 @@
 
         <div class="register-form__field">
           <label for="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            class="register-form__input"
-            formControlName="email"
-          />
-          @if (personalDataForm.get("email")?.invalid &&
-          personalDataForm.get("email")?.touched) {
-          <div class="register-form__error">
-            @if(personalDataForm.get("email")?.errors?.["required"]) {
-            <span> Email é obrigatório. </span>
-            } @if (personalDataForm.get("email")?.errors?.["email"]) {
-            <span> Email inválido. </span>
+          <div class="input-container">
+            <input
+              id="email"
+              type="email"
+              class="register-form__input"
+              formControlName="email"
+              [ngClass]="{
+                'register-form__input--error':
+                  personalDataForm.get('email')?.invalid &&
+                  personalDataForm.get('email')?.touched,
+                'register-form__input--pending':
+                  personalDataForm.get('email')?.pending
+              }"
+            />
+          </div>
+
+          <div class="register-form__error-container">
+            @if (
+              personalDataForm.get("email")?.invalid &&
+              personalDataForm.get("email")?.touched &&
+              !personalDataForm.get("email")?.pending
+            ) {
+              <div class="register-form__error">
+                @if(personalDataForm.get("email")?.errors?.["required"]) {
+                  <span> Email é obrigatório. </span>
+                }
+
+                @if (personalDataForm.get("email")?.errors?.["email"]) {
+                  <span> Email inválido. </span>
+                }
+
+                @if (personalDataForm.get("email")?.errors?.["emailExists"]) {
+                  <span> Email já cadastrado. </span>
+                }
+              </div>
+            }
+
+            @if (personalDataForm.get("email")?.pending) {
+            <div class="register-form__pending">
+              <span> Verificando email... </span>
+            </div>
             }
           </div>
-          }
         </div>
 
         <div class="register-form__row">

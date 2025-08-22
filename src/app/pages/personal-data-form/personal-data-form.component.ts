@@ -23,6 +23,8 @@ import {
 import { ButtonComponent } from 'app/shared/components/button/button.component';
 import { IbgeService, ICity, IState } from 'app/shared/services/ibge.service';
 import { cpfValidator } from 'app/shared/validators/cpf.validator';
+import { emailExistsValidator } from 'app/shared/validators/emailExists.validator';
+import { EmailValidatorService } from 'app/shared/services/email-validator.service';
 
 export const passwordIsEqualValidator: ValidatorFn = (
   control: AbstractControl
@@ -56,7 +58,8 @@ export class PersonalDataFormComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private registerService: RegisterService,
-    private ibgeService: IbgeService
+    private ibgeService: IbgeService,
+    private emailService: EmailValidatorService
   ) {}
 
   ngOnInit(): void {
@@ -70,7 +73,11 @@ export class PersonalDataFormComponent implements OnInit {
         cpf: ['', [Validators.required, cpfValidator]],
         state: ['', Validators.required],
         city: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
+        email: [
+          '',
+          [Validators.required, Validators.email],
+          [emailExistsValidator(this.emailService)],
+        ],
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', Validators.required],
       },
