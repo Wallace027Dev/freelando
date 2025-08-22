@@ -1,197 +1,191 @@
 <div class="register-form">
   <div class="register-form__container">
     <div class="register-form__card">
-      <h2 class="register-form__title">Crie seu cadastro</h2>
+      <h2 class="register-form__title">{{ formConfig.title }}</h2>
 
       <p class="register-form__description">
-        Crie seu perfil gratuitamente para começar a trabalhar com os melhores
-        freelancers. Em seguida, você poderá dar mais detalhes sobre suas
-        demandas e sobre sua forma de trabalho.
+        {{ formConfig.description }}
       </p>
 
       <form [formGroup]="personalDataForm" (ngSubmit)="onNext()">
-        <div class="register-form__field">
-          <label for="fullName" class="register-form__label"
-            >Nome completo</label
-          >
-          <input
-            id="fullName"
-            type="text"
-            class="register-form__input"
-            formControlName="fullName"
-          />
-          @if (personalDataForm.get("fullName")?.invalid &&
-          personalDataForm.get("fullName")?.touched) {
-          <div class="register-form__error">
-            @if(personalDataForm.get("fullName")?.errors?.["required"]) {
-            <span> Nome é obrigatório. </span>
-            } @if (personalDataForm.get("fullName")?.errors?.["minlength"]) {
-            <span> Nome precisa ter pelo menos 3 caracteres. </span>
-            }
-          </div>
-          }
-        </div>
-
-        <div class="register-form__field">
-          <label for="cpf" class="register-form__label">CPF</label>
-          <input
-            id="cpf"
-            type="text"
-            class="register-form__input"
-            formControlName="cpf"
-            placeholder="000.000.000-00"
-            maxlength="11"
-          />
-          @if (personalDataForm.get("cpf")?.invalid &&
-          personalDataForm.get("cpf")?.touched) {
-          <div class="register-form__error">
-            @if(personalDataForm.get("cpf")?.errors?.["required"]) {
-            <span> CPF é obrigatório. </span>
-            } @if (personalDataForm.get("cpf")?.errors?.["invalidCpf"]) {
-            <span> CPF inválido. </span>
-            }
-          </div>
-          }
-        </div>
-
-        <div class="register-form__row">
-          <!-- Estado -->
-          <div class="register-form__field register-form__field--half">
-            <label for="state" class="register-form__label">Estado</label>
-            <select
-              id="state"
-              class="register-form__input"
-              formControlName="state"
-            >
-              <option value="" disabled>Selecione</option>
-
-              @if (states$ | async; as states) { @for (state of states; track
-              state.sigla) {
-              <option [value]="state.sigla">{{ state.nome }}</option>
-              } }
-            </select>
-
-            @if (personalDataForm.get("state")?.invalid &&
-            personalDataForm.get("state")?.touched) {
-            <div class="register-form__error">Estado é obrigatório.</div>
-            }
-          </div>
-
-          <!-- Cidade -->
-          <div class="register-form__field register-form__field--half">
-            <label for="city" class="register-form__label">Cidade</label>
-            <select
-              id="city"
-              class="register-form__input"
-              formControlName="city"
-              [disabled]="
-                (loadingCities$ | async) ||
-                !personalDataForm.get('state')?.value
-              "
-            >
-              <option [ngValue]="null" disabled>
-                @if (!personalDataForm.get('state')?.value) { Selecione }
-                @else { @if (loadingCities$ | async) { Carregando... }
-                @else { Selecione } }
-              </option>
-
-              @if (cities$ | async; as cities) { @for (city of cities; track
-              city.id) {
-              <option [value]="city.id">{{ city.nome }}</option>
-              } }
-            </select>
-
-            @if (personalDataForm.get("city")?.invalid &&
-            personalDataForm.get("city")?.touched) {
-            <div class="register-form__error">Cidade é obrigatório.</div>
-            }
-          </div>
-        </div>
-
-        <div class="register-form__field">
-          <label for="email">Email</label>
-          <div class="input-container">
-            <input
-              id="email"
-              type="email"
-              class="register-form__input"
-              formControlName="email"
-              [ngClass]="{
-                'register-form__input--error':
-                  personalDataForm.get('email')?.invalid &&
-                  personalDataForm.get('email')?.touched,
-                'register-form__input--pending':
-                  personalDataForm.get('email')?.pending
-              }"
-            />
-          </div>
-
-          <div class="register-form__error-container">
-            @if (
-              personalDataForm.get("email")?.invalid &&
-              personalDataForm.get("email")?.touched &&
-              !personalDataForm.get("email")?.pending
-            ) {
-              <div class="register-form__error">
-                @if(personalDataForm.get("email")?.errors?.["required"]) {
-                  <span> Email é obrigatório. </span>
+        @for (field of formConfig.fields; track $index) {
+          <ng-container>
+            @if (isFieldType(field, "text") || isFieldType(field, "email")) {
+            <ng-container>
+              <div
+                class="register-form__field"
+                [ngClass]="{
+                  'register-form__field--half': field.width === 'half'
+                }"
+              >
+                <label
+                  [for]="field.formControlName"
+                  class="register-form__label"
+                  >{{ field.label }}</label
+                >
+                <input
+                  [id]="field.formControlName"
+                  [type]="field.type"
+                  [formControlName]="field.formControlName"
+                  [placeholder]="field.placeholder || ''"
+                  class="register-form__input"
+                />
+                @if (personalDataForm.get(field.formControlName)?.invalid &&
+                personalDataForm.get(field.formControlName)?.touched) {
+                <div class="register-form__error">
+                  @if(personalDataForm.get(field.formControlName)?.errors?.["required"])
+                  {
+                  <ng-container>
+                    @for (errorMessage of field.errorMessages | keyvalue; track
+                    $index) { @if
+                    (personalDataForm.get(field.formControlName)?.errors?.[errorMessage.key])
+                    {
+                    <span>{{ errorMessage.value }}</span>
+                    } }
+                  </ng-container>
+                  }
+                </div>
                 }
+              </div>
+            </ng-container>
+            }
+          </ng-container>
+        }
 
-                @if (personalDataForm.get("email")?.errors?.["email"]) {
-                  <span> Email inválido. </span>
-                }
+        @if (hasField("state") && hasField("city")) {
+          <ng-container>
+            <div class="register-form__row">
+              <!-- Campo Estado -->
+              <div class="register-form__field register-form__field--half">
+                <label for="state" class="register-form__label">{{
+                  getFieldByName("state").label
+                }}</label>
+                <select
+                  id="state"
+                  formControlName="state"
+                  class="register-form__select"
+                >
+                  <option value="" disabled selected>
+                    {{ getFieldByName("state").placeholder || "Selecione" }}
+                  </option>
 
-                @if (personalDataForm.get("email")?.errors?.["emailExists"]) {
-                  <span> Email já cadastrado. </span>
+                  @let states = (states$ | async);
+                  @if(states) { @for (state of states; track
+                  state.sigla) {
+                  <ng-container>
+                    <option [value]="state.sigla">{{ state.nome }}</option>
+                  </ng-container>
+                  } }
+                </select>
+
+                @if( personalDataForm.get("state")?.invalid &&
+                personalDataForm.get("state")?.touched) {
+                <ng-container>
+                  @for (error of getFieldByName("state").errorMessages | keyvalue; track $index) {
+                    @if (personalDataForm.get("state")?.hasError(error.key)) {
+                      <span>{{ error.value }}</span>
+                    }
+                  }
+                </ng-container>
                 }
+              </div>
+
+              <!-- Campo city -->
+              <div class="register-form__field register-form__field--half">
+                <label for="city" class="register-form__label">
+                  {{ getFieldByName('city').label }}
+                </label>
+
+                <select
+                  id="city"
+                  class="register-form__select"
+                  formControlName="city"
+                  [disabled]="(loadingCities$ | async) || !personalDataForm.get('estado')?.value"
+                >
+                  <option value="" disabled selected>
+                    {{ (loadingCities$ | async) ? 'Carregando...' : (getFieldByName('city').placeholder || 'Selecione') }}
+                  </option>
+
+                  @if (cities$ | async; as cities$) {
+                    @for (city of cities$; track city) {
+                      <option [value]="city.nome">{{ city.nome }}</option>
+                    }
+                  }
+                </select>
+
+                @if (personalDataForm.get('city')?.invalid && personalDataForm.get('city')?.touched) {
+                  <div class="register-form__error">
+                    @for (error of getFieldByName('city').errorMessages | keyvalue; track $index) {
+                      @if (personalDataForm.get('city')?.errors?.[error.key]) {
+                        <span>{{ error.value }}</span>
+                      }
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container>
+            <!-- Campos Senha e Confirma Senha (lado a lado) -->
+            @if (hasField('password') && hasField('confirmPassword')) {
+              <!-- Campo password -->
+              <div class="register-form__row">
+                <div class="register-form__field register-form__field--half">
+                  <label for="password" class="register-form__label">
+                    {{ getFieldByName('password').label }}
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    class="register-form__input"
+                    formControlName="password"
+                  />
+
+                  @if (personalDataForm.get('password')?.invalid && personalDataForm.get('password')?.touched) {
+                    <div class="register-form__error">
+                      @for (error of getFieldByName('password').errorMessages | keyvalue; track $index) {
+                        @if (personalDataForm.get('password')?.errors?.[error.key]) {
+                          <span>{{ error.value }}</span>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Campo Confirma Senha -->
+                <div class="register-form__field register-form__field--half">
+                  <label for="confirmPassword" class="register-form__label">
+                    {{ getFieldByName('confirmPassword').label }}
+                  </label>
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    class="register-form__input"
+                    formControlName="confirmPassword"
+                  />
+
+                  @if (personalDataForm.get('confirmPassword')?.invalid && personalDataForm.get('confirmPassword')?.touched) {
+                    <div class="register-form__error">
+                      @for (error of getFieldByName('confirmPassword').errorMessages | keyvalue; track $index) {
+                        @if (personalDataForm.get('confirmPassword')?.errors?.[error.key]) {
+                          <span>{{ error.value }}</span>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
               </div>
             }
 
-            @if (personalDataForm.get("email")?.pending) {
-            <div class="register-form__pending">
-              <span> Verificando email... </span>
-            </div>
-            }
-          </div>
-        </div>
+          </ng-container>
+        }
 
-        <div class="register-form__row">
-          <div class="register-form__field register-form__field--half">
-            <label for="password" class="register-form__label">Senha</label>
-            <input
-              id="password"
-              type="password"
-              class="register-form__input"
-              formControlName="password"
-            />
-            @if (personalDataForm.get("password")?.invalid &&
-            personalDataForm.get("password")?.touched) {
-            <div class="register-form__error">
-              @if (personalDataForm.get("password")?.errors?.["required"]) {
-              <span> Senha é obrigatória. </span>
-              } @if (personalDataForm.get("password")?.errors?.["minlength"]) {
-              <span> Senha precisa ter pelo menos 6 caracteres. </span>
-              }
-            </div>
-            }
+        @if (personalDataForm.errors?.['passwordIsEqual'] && personalDataForm.touched) {
+          <div class="register-form__error">
+            <span>As senhas devem ser iguais</span>
           </div>
-
-          <div class="register-form__field register-form__field--half">
-            <label for="confirmPassword" class="register-form__label"
-              >Confirmar senha</label
-            >
-            <input
-              id="confirmPassword"
-              type="password"
-              class="register-form__input"
-              formControlName="confirmPassword"
-            />
-            @if (personalDataForm.errors?.["passwordsDontMatch"] &&
-            personalDataForm.touched) {
-            <div class="register-form__error">Senhas precisam ser iguais.</div>
-            }
-          </div>
-        </div>
+        }
 
         <div class="register-form__actions">
           <app-button

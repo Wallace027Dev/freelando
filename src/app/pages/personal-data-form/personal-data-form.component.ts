@@ -25,6 +25,10 @@ import { IbgeService, ICity, IState } from 'app/shared/services/ibge.service';
 import { cpfValidator } from 'app/shared/validators/cpf.validator';
 import { emailExistsValidator } from 'app/shared/validators/emailExists.validator';
 import { EmailValidatorService } from 'app/shared/services/email-validator.service';
+import { FormConfig } from 'app/shared/models/form-config.interface';
+import { DynamicFormService } from 'app/shared/services/dynamic-form.service';
+import { getPersonalDataConfig } from 'app/config/personal-data-form.config';
+import { FormFieldBase } from 'app/shared/models/form-field-base.interface';
 
 export const passwordIsEqualValidator: ValidatorFn = (
   control: AbstractControl
@@ -48,6 +52,7 @@ export const passwordIsEqualValidator: ValidatorFn = (
 })
 export class PersonalDataFormComponent implements OnInit {
   personalDataForm!: FormGroup;
+  formConfig!: FormConfig;
 
   states$!: Observable<IState[]>;
   cities$!: Observable<ICity[]>;
@@ -59,29 +64,21 @@ export class PersonalDataFormComponent implements OnInit {
     private router: Router,
     private registerService: RegisterService,
     private ibgeService: IbgeService,
-    private emailService: EmailValidatorService
-  ) {}
+    private emailService: EmailValidatorService,
+    private dynamicFormService: DynamicFormService
+  ) {
+    this.dynamicFormService.registerFormConfig(
+      'personalData',
+      getPersonalDataConfig
+    );
+  }
 
   ngOnInit(): void {
-    const formOptions: AbstractControlOptions = {
-      validators: passwordIsEqualValidator,
-    };
+    this.formConfig = this.dynamicFormService.getFormConfig('personalData');
 
-    this.personalDataForm = this.fb.group(
-      {
-        fullName: ['', [Validators.required, Validators.minLength(3)]],
-        cpf: ['', [Validators.required, cpfValidator]],
-        state: ['', Validators.required],
-        city: ['', Validators.required],
-        email: [
-          '',
-          [Validators.required, Validators.email],
-          [emailExistsValidator(this.emailService)],
-        ],
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirmPassword: ['', Validators.required],
-      },
-      formOptions
+    this.personalDataForm = this.dynamicFormService.createFormGroup(
+      this.formConfig,
+      { validators: passwordIsEqualValidator }
     );
 
     this.loadStates$();
@@ -100,6 +97,23 @@ export class PersonalDataFormComponent implements OnInit {
     } else {
       this.personalDataForm.markAllAsTouched();
     }
+  }
+
+  isFieldType(field: FormFieldBase, type: string): boolean {
+    return field.type === type;
+  }
+
+  hasField(name: string): boolean {
+    return this.formConfig.fields.some(
+      (field) => field.formControlName === name
+    );
+  }
+
+  getFieldByName(name: string): FormFieldBase {
+    return (
+      this.formConfig.fields.find((field) => field.formControlName === name) ||
+      ({} as FormFieldBase)
+    );
   }
 
   private loadStates$(): void {
