@@ -2,9 +2,123 @@
   <div class="register-form__container">
     <div class="register-form__card">
       <h2 class="register-form__title">Crie seu cadastro</h2>
-      <p class="register-form__subtitle">Melhore sua descrição para atrair clientes!</p>
+      <p class="register-form__subtitle">
+        Melhore sua descrição para atrair clientes!
+      </p>
 
-      <form [formGroup]="perfilForm" (ngSubmit)="onProximo()">
+      <form [formGroup]="perfilForm" (ngSubmit)="onNext()">
+        <div class="register-form__field">
+          <label for="photo" class="register-form__label">Sua foto</label>
+
+          <div class="register-form__upload-container">
+            <div
+              class="register-form__upload-area"
+              [class.register-form__upload-area--with-preview]="photoPreview"
+              (click)="fileInput.click()"
+            >
+              <ng-container *ngIf="!photoPreview">
+                <div>
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>
+                    Arraste arquivos para esta área ou clique para fazer o
+                    upload
+                  </p>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="photoPreview">
+                <img
+                  [src]="photoPreview"
+                  alt="Preview da foto"
+                  class="register-form__photo-preview"
+                />
+              </ng-container>
+            </div>
+            <input
+              #fileInput
+              type="file"
+              accept="image/*"
+              style="display: none"
+              (change)="onSelectedPhoto($event)"
+            />
+          </div>
+        </div>
+
+        <div class="register-form_field">
+          <label for="skills" class="register-form__label">
+            Cite até 3 habilidades principais que você possui
+          </label>
+
+          @for (skill of skills; track skill.name) {
+          <app-chip
+            [text]="skill.name"
+            [selected]="skill.selected"
+            [disabled]="
+              !skill.selected &&
+              perfilForm.get('selectedSkills')?.value.length >= 3
+            "
+            (clicked)="toggleSkill(skill)"
+          ></app-chip>
+          }
+        </div>
+
+        <div class="register-form__field">
+          <ng-container formArrayName="languages">
+            @for (languageForm of languagesArray.controls; track $index) {
+            <div [formGroupName]="$index" class="register-form__row">
+              <div class="register-form__column">
+                <select class="register-form__select" formControlName="name">
+                  <option value="" disabled selected>Selecione</option>
+
+                  @for (language of languages; track language) {
+                  <option [value]="language">{{ language }}</option>
+                  }
+                </select>
+
+                @if (languageForm.get("name")?.invalid &&
+                languageForm.get("name")?.touched) {
+                <div class="register-form__error">Idioma é obrigatório.</div>
+                }
+              </div>
+
+              <div class="register-form__column">
+                <select class="register-form__select" formControlName="level">
+                  <option value="" disabled selected>Selecione</option>
+
+                  @for (level of languageLevel; track level) {
+                  <option [value]="level">{{ level }}</option>
+                  }
+                </select>
+
+                @if (languageForm.get("level")?.invalid &&
+                languageForm.get("level")?.touched) {
+                <div class="register-form__error">Nível é obrigatório.</div>
+                }
+              </div>
+            </div>
+
+            <div class="register-form__column register-form__actions">
+              @if ($index > 0 || languageForm.get("name")?.value !==
+              "Português") {
+              <button
+                type="button"
+                class="register-form__icon-button"
+                (click)="removeLanguage($index)"
+              >
+                Remover Idioma
+              </button>
+              }
+            </div>
+            }
+          </ng-container>
+
+          <button
+            type="button"
+            class="register-form__icon-button"
+            (click)="addLanguage()"
+          >
+            Adicionar Idioma
+          </button>
+        </div>
 
         <div class="register-form__actions">
           <app-button
@@ -12,7 +126,8 @@
             type="outline"
             icon="fas fa-arrow-left"
             iconPosition="left"
-            (clicked)="onAnterior()">
+            (clicked)="onPrevious()"
+          >
           </app-button>
 
           <app-button
@@ -21,7 +136,8 @@
             icon="fas fa-arrow-right"
             iconPosition="right"
             [disabled]="perfilForm.invalid"
-            (clicked)="onProximo()">
+            (clicked)="onNext()"
+          >
           </app-button>
         </div>
       </form>

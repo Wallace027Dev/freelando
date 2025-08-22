@@ -11,7 +11,6 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Router } from '@angular/router';
 import {
   BehaviorSubject,
@@ -21,7 +20,9 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { IbgeService, ICity, IState } from '../../shared/services/ibge.service';
+import { ButtonComponent } from 'app/shared/components/button/button.component';
+import { IbgeService, ICity, IState } from 'app/shared/services/ibge.service';
+import { cpfValidator } from 'app/shared/validators/cpf.validator';
 
 export const passwordIsEqualValidator: ValidatorFn = (
   control: AbstractControl
@@ -66,6 +67,7 @@ export class PersonalDataFormComponent implements OnInit {
     this.personalDataForm = this.fb.group(
       {
         fullName: ['', [Validators.required, Validators.minLength(3)]],
+        cpf: ['', [Validators.required, cpfValidator]],
         state: ['', Validators.required],
         city: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
@@ -81,13 +83,13 @@ export class PersonalDataFormComponent implements OnInit {
 
   onPrevious(): void {
     this.saveCurrentData();
-    this.router.navigate(['/register/area-atuacao']);
+    this.router.navigate(['/cadastro/area-atuacao']);
   }
 
   onNext(): void {
     if (this.personalDataForm.valid) {
       this.saveCurrentData();
-      this.router.navigate(['/register/perfil']);
+      this.router.navigate(['/cadastro/perfil']);
     } else {
       this.personalDataForm.markAllAsTouched();
     }

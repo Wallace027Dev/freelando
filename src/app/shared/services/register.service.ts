@@ -1,7 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { Language } from 'app/shared/models/language.interface';
+import { Skill } from 'app/shared/models/skill.interface';
 
 interface IRegisterData {
+  photo?: string | ArrayBuffer | null;
+  summary?: string;
+  selectedSkills?: Skill[];
+  languages?: Language[];
+  portfolio?: string;
+  linkedin?: string;
   activityArea?: string;
   experienceLevel?: string;
   fullName?: string;

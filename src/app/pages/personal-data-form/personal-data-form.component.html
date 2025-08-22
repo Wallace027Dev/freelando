@@ -32,6 +32,28 @@
           }
         </div>
 
+        <div class="register-form__field">
+          <label for="cpf" class="register-form__label">CPF</label>
+          <input
+            id="cpf"
+            type="text"
+            class="register-form__input"
+            formControlName="cpf"
+            placeholder="000.000.000-00"
+            maxlength="11"
+          />
+          @if (personalDataForm.get("cpf")?.invalid &&
+          personalDataForm.get("cpf")?.touched) {
+          <div class="register-form__error">
+            @if(personalDataForm.get("cpf")?.errors?.["required"]) {
+            <span> CPF é obrigatório. </span>
+            } @if (personalDataForm.get("cpf")?.errors?.["invalidCpf"]) {
+            <span> CPF inválido. </span>
+            }
+          </div>
+          }
+        </div>
+
         <div class="register-form__row">
           <!-- Estado -->
           <div class="register-form__field register-form__field--half">
