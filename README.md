@@ -1,53 +1,52 @@
-![ng-fokus](thumbnail.png)
+# 🧑‍💻 Freelando
 
+Plataforma de cadastro para **clientes** e **freelancers** desenvolvida com Angular 19. O projeto demonstra boas práticas no uso de **Reactive Forms**, com validações, campos dinâmicos e navegação por etapas do formulário.
 
-# Freelando
+![Angular](https://img.shields.io/badge/Angular-19-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?style=for-the-badge&logo=reactivex&logoColor=white)
 
-O Freelando é um aplicativo desenvolvido com Angular 19 que permite a criação e gerenciamento de cadastros utilizando Reactive Forms. Com ele, tanto clientes quanto freelancers podem se conectar de maneira eficiente, garantindo uma experiência intuitiva e organizada no preenchimento de formulários interativos.
+## ✨ Funcionalidades
 
-O projeto visa demonstrar as melhores práticas no uso do Reactive Forms, fornecendo validações, usabilidade aprimorada e um fluxo estruturado para o usuário.
+- 📝 Cadastro dinâmico e validado com **Reactive Forms**
+- 👤 Suporte a perfis de **cliente** e **freelancer**
+- 🎯 Seleção de área de atuação e nível de experiência
+- ✅ Validações em tempo real nos campos do formulário
+- 🔢 Navegação entre etapas do processo de cadastro
 
-## 🔨 Funcionalidades do projeto
+## 🛠️ Tecnologias
 
-- Cadastro dinâmico e validado com Reactive Forms
-- Seção interativa para selecionar área de atuação e nível de experiência
-- Campos dinâmicos que garantem preenchimento correto
-- Suporte a navegação entre etapas do formulário
+| Tecnologia | Versão |
+|---|---|
+| Angular | 19.2 |
+| TypeScript | 5.7 |
+| Reactive Forms | nativo |
+| RxJS | 7.8 |
 
-## ✔️ Tecnologias utilizadas
+## 🚀 Como rodar localmente
 
-As principais tecnologias utilizadas no projeto incluem:
-
-- `Angular 19`: framework para desenvolvimento de aplicações web
-- `Reactive Forms`: para gerenciamento avançado de formulários
-- `RxJS`: para programação reativa
-- `TypeScript`: linguagem utilizada para desenvolvimento
-
-## 📁 Acesso ao projeto
-
-Você pode [acessar o código fonte no GitHub](https://github.com/Charlinho/freelando-reactive-form).
-
-## 🛠️ Como rodar o projeto
-
-1. Clone o repositório do projeto:
+1. Clone o repositório:
    ```bash
-   git clone https://github.com/Charlinho/freelando-reactive-form.git
+   git clone https://github.com/Wallace027Dev/freelando.git
+   cd freelando
    ```
-2. Navegue até o diretório do projeto:
-   ```bash
-   cd freelando-reactive-form
-   ```
-3. Instale as dependências:
+
+2. Instale as dependências:
    ```bash
    npm install
    ```
-4. Execute o projeto:
+
+3. Inicie o servidor de desenvolvimento:
    ```bash
    ng serve
    ```
-5. Abra o navegador e acesse `http://localhost:4200/` para visualizar a aplicação em execução.
 
-## 📚 Mais informações
+Acesse [http://localhost:4200](http://localhost:4200).
 
-Para mais detalhes sobre o projeto e suas funcionalidades, visite o [repositório no GitHub](https://github.com/Charlinho/freelando-reactive-form).
+## 🌐 Deploy
 
+> Em breve disponível via GitHub Pages.
+
+## 📄 Licença
+
+Este projeto está sob a licença [MIT](LICENSE).
